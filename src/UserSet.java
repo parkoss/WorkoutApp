@@ -90,7 +90,7 @@ public class UserSet implements ActionListener {
 
                 JOptionPane.showMessageDialog(userSetFrame, "Saved:\nName: " + name + "\nHeight: " + height + "\nWeight: " + weight);
                 userSetFrame.dispose();
-                new Menu();
+                new Menu(username);
 
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(userSetFrame, "Write correct form","Error", JOptionPane.ERROR_MESSAGE);

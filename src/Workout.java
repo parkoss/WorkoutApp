@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 
 public class Workout implements ActionListener {
     JFrame workoutFrame;
@@ -32,8 +33,12 @@ public class Workout implements ActionListener {
     JButton newExerciseButton;
 
     String currentExercise="";
+    String userName;
+    JLabel pauseTimerLabel;
+    JButton historyButton=new JButton();
 
-    public Workout() {
+    public Workout(String userName) {
+        this.userName=userName;
         workoutFrame=new JFrame("Workout");
         workoutFrame.setSize(500, 300);
         workoutFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -110,16 +115,16 @@ public class Workout implements ActionListener {
     }
 
     private void setupPauseTimerPanel(){
-        timerPanel = new JPanel();
-        timerLabel = new JLabel("Stopwatch: 0 s");
+        JPanel pausePanel = new JPanel();
+        pauseTimerLabel = new JLabel("Stopwatch: 0 s");
         stopPauseButton=new JButton("Stop");
 
         stopPauseButton.addActionListener(this);
 
-        timerPanel.add(timerLabel);
-        timerPanel.add(stopPauseButton);
+        pausePanel.add(pauseTimerLabel);
+        pausePanel.add(stopPauseButton);
 
-        mainPanel.add(timerPanel, "PauseTimer");
+        mainPanel.add(pausePanel, "PauseTimer");
     }
 
     private void setupResultPanel(){
@@ -208,6 +213,14 @@ public class Workout implements ActionListener {
         newExerciseButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         newExerciseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        historyButton= new JButton("Show Workout History");
+        historyButton.setFont(buttonFont);
+        historyButton.setFocusPainted(false);
+        historyButton.setBackground(new Color(155, 89, 182));
+        historyButton.setForeground(Color.WHITE);
+        historyButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        historyButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        historyButton.addActionListener(this);
 
         sameExerciseButton.addActionListener(this);
         newExerciseButton.addActionListener(this);
@@ -215,6 +228,9 @@ public class Workout implements ActionListener {
         choicePanel.add(sameExerciseButton);
         choicePanel.add(Box.createVerticalStrut(15));
         choicePanel.add(newExerciseButton);
+        choicePanel.add(Box.createVerticalStrut(15));
+        choicePanel.add(historyButton);
+
 
         mainPanel.add(choicePanel, "choice");
 
@@ -239,24 +255,69 @@ public class Workout implements ActionListener {
     }
 
     private void startPause(int seconds){
-        timerLabel.setText("Pause is running: "+seconds+ "s");
+        pauseTimerLabel.setText("Pause is running: "+seconds+ "s");
         switchPanel("PauseTimer");
 
-        new Timer(1000, new ActionListener() {
+        Timer pauseTimer = new Timer(1000, new ActionListener() {
             int timeLeft = seconds;
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 timeLeft--;
-                timerLabel.setText("Pause left : " + timeLeft + " s");
+                pauseTimerLabel.setText("Pause left : " + timeLeft + " s");
 
-                if (timeLeft <= 0||e.getSource()==stopPauseButton) {
+                if (timeLeft <= 0) {
                     ((Timer) e.getSource()).stop();
                     switchPanel("choice");
                 }
             }
-        }).start();
+        });
+        pauseTimer.start();
+    }
 
+    private void saveWorkoutToFile(String exercise, int reps, double weight) {
+        String fileName = "plan_" + userName + ".txt";
+        String date = java.time.LocalDate.now().toString();
+        String line = date + ";" + exercise + ";" + reps + ";" + weight;
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            writer.write(line);
+            writer.newLine();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(workoutFrame, "error","error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void showWorkoutHistory() {
+        String fileName = "plan_" + userName + ".txt";
+        File file = new File(fileName);
+        if (!file.exists()) {
+            JOptionPane.showMessageDialog(workoutFrame, "No history", "History", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        String historyText="";
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(";");
+                if (parts.length == 4) {
+                    historyText = historyText + "Date: " + parts[0]
+                            + ", Exercise: " + parts[1]
+                            + ", Reps: " + parts[2]
+                            + ", Weight: " + parts[3] + " kg\n";
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(workoutFrame, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        JTextArea textArea = new JTextArea(historyText.toString());
+        textArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(400, 300));
+        JOptionPane.showMessageDialog(workoutFrame, scrollPane, "Workout History", JOptionPane.INFORMATION_MESSAGE);
     }
 
 
@@ -276,9 +337,18 @@ public class Workout implements ActionListener {
 
         } else if (e.getSource()==backButton) {
             workoutFrame.dispose();
-            new Menu();
+            new Menu(userName);
 
         } else if (e.getSource()==pauseStartButton) {
+            try {
+                int reps = Integer.parseInt(repsInput.getText());
+                double weight = Double.parseDouble(weightInput.getText());
+                saveWorkoutToFile(currentExercise, reps, weight);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(workoutFrame, "Enter correct form", "error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             int pauseMinutes=switch (pauseSelector.getSelectedIndex()){
                 case 0->0;
                 case 1->1;
@@ -298,6 +368,8 @@ public class Workout implements ActionListener {
         } else if (e.getSource()==stopPauseButton) {
             stopwatch.stop();
             switchPanel("choice");
+        }else if (e.getSource()==historyButton) {
+            showWorkoutHistory();
         }
 
     }
