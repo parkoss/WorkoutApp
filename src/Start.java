@@ -10,13 +10,16 @@ public class Start implements ActionListener {
 
     Start(){
         startButton=new JButton();
-        startButton = new JButton("Start");
-        startButton.setBounds(230, 680, 100, 50);
+        startButton = new JButton();
+        startButton.setBounds(155, 530, 225, 115);
+        startButton.setContentAreaFilled(false);
+        startButton.setOpaque(false);
+        startButton.setBorder(null);
         startButton.addActionListener(this);
         startFrame.add(startButton);
 
 
-        ImageIcon backgroundImage= new ImageIcon("MenuBackGround.png");
+        ImageIcon backgroundImage= new ImageIcon("startFrame.png");
         startLabel = new JLabel(backgroundImage);
         startLabel.setSize(1000,1000);
         startFrame.add(startLabel);

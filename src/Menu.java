@@ -7,6 +7,7 @@ public class Menu implements ActionListener {
     JFrame menuFrame = new JFrame();
     JLabel menuLabel;
     JButton goWorkoutButton;
+    JButton planButton;
     Workout workout;
     String userName;
 
@@ -18,15 +19,19 @@ public class Menu implements ActionListener {
         goWorkoutButton.setOpaque(false);
         goWorkoutButton.setBorder(null);
         goWorkoutButton.addActionListener(this);
-
         menuFrame.add(goWorkoutButton);
+
+        planButton=new JButton();
+        planButton.setBounds(215,615,240,195);
+        planButton.setContentAreaFilled(false);
+        planButton.setOpaque(false);
+        planButton.setBorder(null);
+        planButton.addActionListener(this);
+        menuFrame.add(planButton);
 
 
 
         
-
-
-
         ImageIcon backgroundImage= new ImageIcon("menuFrameRemastered.png");
         menuLabel = new JLabel(backgroundImage);
         menuLabel.setSize(1000,1000);
@@ -51,6 +56,10 @@ public class Menu implements ActionListener {
         if (e.getSource()==goWorkoutButton){
             menuFrame.dispose();
             new Workout(userName);
+        } else if (e.getSource()==planButton) {
+            menuFrame.dispose();
+            new Plan();
+            
         }
 
     }
