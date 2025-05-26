@@ -31,6 +31,7 @@ public class Workout implements ActionListener {
     JPanel choicePanel;
     JButton sameExerciseButton;
     JButton newExerciseButton;
+    JButton endWorkoutButton;
 
     String currentExercise="";
     String userName;
@@ -222,6 +223,17 @@ public class Workout implements ActionListener {
         historyButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         historyButton.addActionListener(this);
 
+        endWorkoutButton= new JButton("End Workout");
+        endWorkoutButton.setFont(buttonFont);
+        endWorkoutButton.setFocusPainted(false);
+        endWorkoutButton.setBackground(new Color(255, 99, 71));
+        endWorkoutButton.setForeground(Color.WHITE);
+        endWorkoutButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        endWorkoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        endWorkoutButton.addActionListener(this);
+
+
+
         sameExerciseButton.addActionListener(this);
         newExerciseButton.addActionListener(this);
 
@@ -230,7 +242,8 @@ public class Workout implements ActionListener {
         choicePanel.add(newExerciseButton);
         choicePanel.add(Box.createVerticalStrut(15));
         choicePanel.add(historyButton);
-
+        choicePanel.add(Box.createVerticalStrut(15));
+        choicePanel.add(endWorkoutButton);
 
         mainPanel.add(choicePanel, "choice");
 
@@ -327,6 +340,11 @@ public class Workout implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource()==startButton){
+            String name=exerciseInput.getText().trim();
+            if (name.isEmpty()){
+                JOptionPane.showMessageDialog(mainPanel, "Enter name of the plan", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             currentExercise=exerciseInput.getText();
             switchPanel("Timer");
             startStopWatch();
@@ -339,7 +357,7 @@ public class Workout implements ActionListener {
             workoutFrame.dispose();
             new Menu(userName);
 
-        } else if (e.getSource()==pauseStartButton) {
+        } else if (e.getSource()==pauseStartButton){
             try {
                 int reps = Integer.parseInt(repsInput.getText());
                 double weight = Double.parseDouble(weightInput.getText());
@@ -370,6 +388,8 @@ public class Workout implements ActionListener {
             switchPanel("choice");
         }else if (e.getSource()==historyButton) {
             showWorkoutHistory();
+        } else if (e.getSource()==endWorkoutButton) {
+            new Menu(userName);
         }
 
     }

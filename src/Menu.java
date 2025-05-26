@@ -10,6 +10,7 @@ public class Menu implements ActionListener {
     JButton planButton;
     Workout workout;
     String userName;
+    String userNamePlan;
 
     public Menu(String userName) {
         this.userName=userName;
