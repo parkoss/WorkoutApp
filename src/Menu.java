@@ -10,7 +10,6 @@ public class Menu implements ActionListener {
     JButton planButton;
     Workout workout;
     String userName;
-    String userNamePlan;
 
     public Menu(String userName) {
         this.userName=userName;
@@ -59,7 +58,7 @@ public class Menu implements ActionListener {
             new Workout(userName);
         } else if (e.getSource()==planButton) {
             menuFrame.dispose();
-            new Plan();
+            new Plan(userName);
             
         }
 

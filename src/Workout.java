@@ -289,7 +289,7 @@ public class Workout implements ActionListener {
     }
 
     private void saveWorkoutToFile(String exercise, int reps, double weight) {
-        String fileName = "plan_" + userName + ".txt";
+        String fileName = "workout_" + userName + ".txt";
         String date = java.time.LocalDate.now().toString();
         String line = date + ";" + exercise + ";" + reps + ";" + weight;
 
@@ -302,7 +302,7 @@ public class Workout implements ActionListener {
     }
 
     private void showWorkoutHistory() {
-        String fileName = "plan_" + userName + ".txt";
+        String fileName = "workout_" + userName + ".txt";
         File file = new File(fileName);
         if (!file.exists()) {
             JOptionPane.showMessageDialog(workoutFrame, "No history", "History", JOptionPane.INFORMATION_MESSAGE);
@@ -389,6 +389,7 @@ public class Workout implements ActionListener {
         }else if (e.getSource()==historyButton) {
             showWorkoutHistory();
         } else if (e.getSource()==endWorkoutButton) {
+            workoutFrame.dispose();
             new Menu(userName);
         }
 

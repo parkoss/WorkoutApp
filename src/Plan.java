@@ -33,12 +33,12 @@ public class Plan implements ActionListener {
 
     ArrayList<WorkoutPlan> userPlans = new ArrayList<>();
 
-    //String userNamePlan;
     String userName;
 
 
 
-    public Plan() {
+    public Plan(String userName){
+        this.userName =userName;
         planFrame.setTitle("Planning board");
         planFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         planFrame.setSize(1000, 1000);
@@ -164,43 +164,77 @@ public class Plan implements ActionListener {
         notificationFrame = new JFrame("Notification Board");
         notificationFrame.setSize(400, 400);
         notificationFrame.setLocationRelativeTo(planFrame);
+        notificationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        notificationPanel = new JPanel();
-        notificationPanel.setLayout(new BoxLayout(notificationPanel, BoxLayout.Y_AXIS));
-        notificationPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         Font labelFont = new Font("Roboto", Font.BOLD, 14);
 
-        showPlanHistoryButton=new JButton("Show plan history");
-        showPlanHistoryButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        showPlanHistoryButton.setBackground(new Color(255, 99, 71));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        String todayPlansText = getTodayPlansText();
+
+        JTextArea todayPlansArea = new JTextArea(todayPlansText);
+        todayPlansArea.setEditable(false);
+        todayPlansArea.setLineWrap(true);
+        todayPlansArea.setWrapStyleWord(true);
+        todayPlansArea.setFont(new Font("Roboto", Font.PLAIN, 13));
+        todayPlansArea.setBackground(new Color(245, 245, 245));
+
+        JScrollPane scrollPane = new JScrollPane(todayPlansArea);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(300, 200));
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel.add(scrollPane, gbc);
+
+        showPlanHistoryButton = new JButton("Show plan history");
+        showPlanHistoryButton.setFont(labelFont);
+        showPlanHistoryButton.setBackground(new Color(155, 89, 182));
         showPlanHistoryButton.setFocusPainted(false);
         showPlanHistoryButton.setForeground(Color.WHITE);
         showPlanHistoryButton.addActionListener(this);
 
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(showPlanHistoryButton, gbc);
+
         backButton = new JButton("Back");
-        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        backButton.setBounds(350,350,100,50);
+        backButton.setFont(labelFont);
         backButton.setBackground(new Color(255, 99, 71));
         backButton.setFocusPainted(false);
         backButton.setForeground(Color.WHITE);
         backButton.addActionListener(this);
 
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(backButton, gbc);
 
-        notificationPanel.add(showPlanHistoryButton);
-        notificationPanel.add(Box.createVerticalStrut(20));
-        notificationPanel.add(backButton);
-        notificationPanel.add(Box.createVerticalStrut(20));
-
-        notificationFrame.add(notificationPanel);
+        notificationFrame.add(panel);
         planFrame.setVisible(false);
         notificationFrame.setVisible(true);
     }
 
-    /*private void savePlanToFile(String planName,String date,String time,String note){
-        String fileName="plan_"+userNamePlan+".txt";
+
+
+    private void savePlanToFile(String planName,String date,String time,String note){
+        String fileName="plan_"+ userName +".txt";
         String dateNow=java.time.LocalDate.now().toString();
-        String line=dateNow+";"+planName+";"+date+";"+time+";"+note+";";
+        String line=dateNow+";"+planName+";"+date+";"+time+";"+note;
 
         try(BufferedWriter writer=new BufferedWriter(new FileWriter(fileName,true))){
             writer.write(line);
@@ -210,10 +244,10 @@ public class Plan implements ActionListener {
         }
     }
 
-     */
 
-    /*private void showPlanHistory(){
-        String fileName="plan_"+userNamePlan+".txt";
+
+    private void showPlanHistory(){
+        String fileName="plan_"+ userName +".txt";
         File file = new File(fileName);
         if (!file.exists()){
             JOptionPane.showMessageDialog(planFrame,"no history","history",JOptionPane.INFORMATION_MESSAGE);
@@ -243,7 +277,32 @@ public class Plan implements ActionListener {
         JOptionPane.showMessageDialog(planFrame, scrollPane, "Workout History", JOptionPane.INFORMATION_MESSAGE);
     }
 
-     */
+    private String getTodayPlansText() {
+        String fileName = "plan_" + userName + ".txt";
+        File file = new File(fileName);
+        if (!file.exists()) return "No plans today.";
+
+        String today = java.time.LocalDate.now().toString();
+        StringBuilder todayPlans = new StringBuilder();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(";");
+                if (parts.length >= 5 && parts[2].equals(today)) {
+                    todayPlans.append("• ").append(parts[1])
+                            .append(" in ").append(parts[3])
+                            .append(" – ").append(parts[4]).append("\n");
+                }
+            }
+        } catch (IOException e) {
+            return "Error";
+        }
+
+        return todayPlans.length() > 0 ? todayPlans.toString() : "No plans today.";
+    }
+
+
 
 
 
@@ -273,21 +332,18 @@ public class Plan implements ActionListener {
                 JOptionPane.showMessageDialog(newPlanFrame, "Čas musí být ve formátu HH:MM.", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            /*userPlans.add(new WorkoutPlan(name, date, time, note));
+            userPlans.add(new WorkoutPlan(name, date, time, note));
             savePlanToFile(name,date,time,note);
-
             System.out.println("Plan saved: " + name + ", " + date + " " + time + ", note: " + note);
-             */
             newPlanFrame.dispose();
         } else if (e.getSource()==backButton) {
             notificationFrame.dispose();
             planFrame.setVisible(true);
         } else if (e.getSource()==showPlanHistoryButton) {
-            //showPlanHistory();
+            showPlanHistory();
         } else if (e.getSource()==closeButton) {
-            //planFrame.dispose();
-            //new Menu(userName);                                                                                       soubor se uklada do stejneho souboru jako workout, zatim nefunkcni, kvuli String userName ig
-
+            planFrame.dispose();
+            new Menu(userName);
         }
     }
 
