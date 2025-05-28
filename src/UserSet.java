@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -25,6 +26,11 @@ public class UserSet implements ActionListener {
 
         saveButton = new JButton("Save");
         saveButton.setBounds(330, 300, 100, 30);
+        saveButton.setBackground(new Color(70, 130, 180));
+        saveButton.setFont(new Font("Roboto",Font.BOLD,14));
+        saveButton.setForeground(Color.WHITE);
+        saveButton.setFocusPainted(false);
+        saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         saveButton.addActionListener(this);
         userSetFrame.add(saveButton);
 

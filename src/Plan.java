@@ -225,7 +225,7 @@ public class Plan implements ActionListener {
         panel.add(backButton, gbc);
 
         notificationFrame.add(panel);
-        planFrame.setVisible(false);
+        planFrame.setVisible(true);
         notificationFrame.setVisible(true);
     }
 

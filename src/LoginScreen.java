@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -24,6 +25,10 @@ public class LoginScreen implements ActionListener {
 
         continueButton = new JButton("Continue");
         continueButton.setBounds(130, 100, 120, 30);
+        continueButton.setBackground(new Color(70, 130, 180));
+        continueButton.setFont(new Font("Roboto",Font.BOLD,14));
+        continueButton.setForeground(Color.WHITE);
+        continueButton.setFocusPainted(false);
         continueButton.addActionListener(this);
         loginFrame.add(continueButton);
 
