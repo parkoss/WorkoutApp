@@ -38,6 +38,16 @@ public class LoginScreen implements ActionListener {
         loginFrame.setVisible(true);
     }
 
+
+    /**
+     * Handles the action event when the continue button is pressed.
+     * If the username field is not empty, it disposes of the login frame
+     * and creates a new UserSet instance with the entered username.
+     * Otherwise, it shows a message dialog prompting the user to enter their name.
+     *
+     * @param e the action event triggered by the button press
+     */
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String username = usernameField.getText().trim();

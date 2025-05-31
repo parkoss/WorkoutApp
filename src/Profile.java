@@ -49,6 +49,9 @@ public class Profile implements ActionListener {
         profileFrame.setVisible(true);
     }
 
+    /**
+     * Sets up the profile page with user details and buttons.
+     */
 
     private void setupProfilepage() {
         profilePanel = new JPanel();
@@ -148,6 +151,10 @@ public class Profile implements ActionListener {
     }
 
 
+    /**
+     * Loads user details from a file if it exists.
+     */
+
     private void loadUserFromFile() {
         user = new User();
         File file = new File("user_" + userName + ".txt");
@@ -166,6 +173,12 @@ public class Profile implements ActionListener {
         }
     }
 
+    /**
+     * Retrieves the count of exercises from the user's workout file.
+     *
+     * @return the number of exercises completed
+     */
+
     private int getExercisesCountFromFile() {
         File file = new File("workout_" + userName + ".txt");
         if (!file.exists()) return 0;
@@ -181,6 +194,12 @@ public class Profile implements ActionListener {
         return count;
     }
 
+    /**
+     * Retrieves the count of plans assigned to the user from the plan file.
+     *
+     * @return the number of plans assigned
+     */
+
     private int getPlansCountFromFile() {
         File file = new File("plan_" + userName + ".txt");
         if (!file.exists()) return 0;
@@ -195,6 +214,12 @@ public class Profile implements ActionListener {
         }
         return count;
     }
+
+    /**
+     * Retrieves the count of workouts completed by the user.
+     *
+     * @return the number of workouts completed
+     */
 
     private int getWorkoutCount() {
         File file = new File("user_" + userName + "_workouts.txt");
@@ -214,13 +239,19 @@ public class Profile implements ActionListener {
         return count;
     }
 
+    /**
+     * Handles action events for the profile buttons.
+     * It navigates back to the menu or logs out the user.
+     *
+     * @param e the action event triggered by button presses
+     */
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource()==backButton){
+        if (e.getSource() == backButton) {
             profileFrame.dispose();
             new Menu(userName);
-        }else if(e.getSource()==logOutButton){
+        } else if (e.getSource() == logOutButton) {
             profileFrame.dispose();
             new Start();
         }

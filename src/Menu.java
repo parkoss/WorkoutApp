@@ -63,6 +63,13 @@ public class Menu implements ActionListener {
 
     }
 
+    /**
+     * Handles action events for the menu buttons.
+     * It navigates to the corresponding screens based on the button pressed.
+     *
+     * @param e the action event triggered by button presses
+     */
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource()==goWorkoutButton){

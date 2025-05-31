@@ -36,9 +36,8 @@ public class Plan implements ActionListener {
     String userName;
 
 
-
-    public Plan(String userName){
-        this.userName =userName;
+    public Plan(String userName) {
+        this.userName = userName;
         planFrame.setTitle("Planning board");
         planFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         planFrame.setSize(1000, 1000);
@@ -64,11 +63,11 @@ public class Plan implements ActionListener {
         notificationButton.addActionListener(this);
         planFrame.add(notificationButton);
 
-        closeButton=new JButton("Back");
-        closeButton.setBounds(800,800,100,50);
-        closeButton.setFont(new Font("Roboto",Font.BOLD,14));
+        closeButton = new JButton("Back");
+        closeButton.setBounds(800, 800, 100, 50);
+        closeButton.setFont(new Font("Roboto", Font.BOLD, 14));
         closeButton.setFocusPainted(false);
-        closeButton.setBackground(new Color(255,99,71));
+        closeButton.setBackground(new Color(255, 99, 71));
         closeButton.setForeground(Color.WHITE);
         closeButton.addActionListener(this);
         planFrame.add(closeButton);
@@ -85,6 +84,12 @@ public class Plan implements ActionListener {
         planFrame.setContentPane(planLabel);
         planFrame.setVisible(true);
     }
+
+    /**
+     * Opens a new frame to create a new plan.
+     * It sets up the input fields for plan name, date, time, and notes,
+     * and adds an action listener for the submit button.
+     */
 
     private void newPlan() {
         newPlanFrame = new JFrame("New Plan");
@@ -136,7 +141,7 @@ public class Plan implements ActionListener {
 
         submitButton = new JButton("Submit");
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        submitButton.setBackground(new Color(70,130,180));
+        submitButton.setBackground(new Color(70, 130, 180));
         submitButton.setFont(labelFont);
         submitButton.setFocusPainted(false);
         submitButton.setForeground(Color.WHITE);
@@ -159,6 +164,11 @@ public class Plan implements ActionListener {
         newPlanFrame.add(newPlanPanel);
         newPlanFrame.setVisible(true);
     }
+
+    /**
+     * Sets up the notification frame to display today's plans.
+     * It retrieves today's plans and displays them in a text area.
+     */
 
     private void notificationSet() {
         notificationFrame = new JFrame("Notification Board");
@@ -230,43 +240,55 @@ public class Plan implements ActionListener {
     }
 
 
+    /**
+     * Saves the specified plan details to a file.
+     *
+     * @param planName the name of the plan
+     * @param date     the date of the plan
+     * @param time     the time of the plan
+     * @param note     additional notes for the plan
+     */
 
-    private void savePlanToFile(String planName,String date,String time,String note){
-        String fileName="plan_"+ userName +".txt";
-        String dateNow=java.time.LocalDate.now().toString();
-        String line=dateNow+";"+planName+";"+date+";"+time+";"+note;
+    public void savePlanToFile(String planName, String date, String time, String note) {
+        String fileName = "plan_" + userName + ".txt";
+        String dateNow = java.time.LocalDate.now().toString();
+        String line = dateNow + ";" + planName + ";" + date + ";" + time + ";" + note;
 
-        try(BufferedWriter writer=new BufferedWriter(new FileWriter(fileName,true))){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
             writer.write(line);
             writer.newLine();
-        }catch (IOException e){
-            JOptionPane.showMessageDialog(planFrame,"error","error",JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(planFrame, "error", "error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
 
+    /**
+     * Displays the history of plans saved for the user.
+     * It reads from the plan file and shows the details in a dialog.
+     */
 
-    private void showPlanHistory(){
-        String fileName="plan_"+ userName +".txt";
+    private void showPlanHistory() {
+        String fileName = "plan_" + userName + ".txt";
         File file = new File(fileName);
-        if (!file.exists()){
-            JOptionPane.showMessageDialog(planFrame,"no history","history",JOptionPane.INFORMATION_MESSAGE);
+        if (!file.exists()) {
+            JOptionPane.showMessageDialog(planFrame, "no history", "history", JOptionPane.INFORMATION_MESSAGE);
         }
-        String historyText="";
-        try(BufferedReader reader = new BufferedReader(new FileReader(file))){
+        String historyText = "";
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-            while((line=reader.readLine())!=null){
-                String[]parts=line.split(";");
-                if (parts.length==5){
-                    historyText=historyText+"Date: "+parts[ 0]
-                            +", name: "+ parts[1]
-                            +", date: "+ parts[2]
-                            +", time: "+parts[3]
-                            +", note:"+parts[4]+"\n";
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(";");
+                if (parts.length == 5) {
+                    historyText = historyText + "Date: " + parts[0]
+                            + ", name: " + parts[1]
+                            + ", date: " + parts[2]
+                            + ", time: " + parts[3]
+                            + ", note:" + parts[4] + "\n";
                 }
 
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             JOptionPane.showMessageDialog(planFrame, "Error", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -277,7 +299,13 @@ public class Plan implements ActionListener {
         JOptionPane.showMessageDialog(planFrame, scrollPane, "Workout History", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private String getTodayPlansText() {
+    /**
+     * Retrieves today's plans from the user's plan file.
+     *
+     * @return a string representation of today's plans or a message if there are none
+     */
+
+    public String getTodayPlansText() {
         String fileName = "plan_" + userName + ".txt";
         File file = new File(fileName);
         if (!file.exists()) return "No plans today.";
@@ -303,10 +331,12 @@ public class Plan implements ActionListener {
     }
 
 
-
-
-
-
+    /**
+     * Handles action events for various buttons in the plan frame.
+     * It responds to new plan creation, notifications, and submission of plan details.
+     *
+     * @param e the action event triggered by button presses
+     */
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -314,10 +344,10 @@ public class Plan implements ActionListener {
             newPlan();
         } else if (e.getSource() == notificationButton) {
             notificationSet();
-        } else if (e.getSource()==submitButton) {
+        } else if (e.getSource() == submitButton) {
             String name = planNameInput.getText().trim();
             String date = dateInput.getText().trim();
-            String time=timeInput.getText().trim();
+            String time = timeInput.getText().trim();
             String note = noteInput.getText().trim();
 
             if (name.isEmpty()) {
@@ -333,15 +363,15 @@ public class Plan implements ActionListener {
                 return;
             }
             userPlans.add(new WorkoutPlan(name, date, time, note));
-            savePlanToFile(name,date,time,note);
+            savePlanToFile(name, date, time, note);
             System.out.println("Plan saved: " + name + ", " + date + " " + time + ", note: " + note);
             newPlanFrame.dispose();
-        } else if (e.getSource()==backButton) {
+        } else if (e.getSource() == backButton) {
             notificationFrame.dispose();
             planFrame.setVisible(true);
-        } else if (e.getSource()==showPlanHistoryButton) {
+        } else if (e.getSource() == showPlanHistoryButton) {
             showPlanHistory();
-        } else if (e.getSource()==closeButton) {
+        } else if (e.getSource() == closeButton) {
             planFrame.dispose();
             new Menu(userName);
         }

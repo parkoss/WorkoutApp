@@ -61,6 +61,10 @@ public class Workout implements ActionListener {
         workoutFrame.setVisible(true);
     }
 
+    /**
+     * Sets up the input panel for entering exercise details.
+     */
+
     private void setupInputPanel() {
         inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
@@ -105,6 +109,10 @@ public class Workout implements ActionListener {
 
     }
 
+    /**
+     * Sets up the timer panel for the workout session.
+     */
+
     private void setupTimerPanel() {
         timerPanel = new JPanel();
         timerLabel = new JLabel("Stopwatch: 0 s");
@@ -118,6 +126,10 @@ public class Workout implements ActionListener {
         mainPanel.add(timerPanel, "Timer");
     }
 
+    /**
+     * Sets up the pause timer panel for managing workout pauses.
+     */
+
     private void setupPauseTimerPanel() {
         JPanel pausePanel = new JPanel();
         pauseTimerLabel = new JLabel("Stopwatch: 0 s");
@@ -130,6 +142,10 @@ public class Workout implements ActionListener {
 
         mainPanel.add(pausePanel, "PauseTimer");
     }
+
+    /**
+     * Sets up the result panel for entering workout results.
+     */
 
     private void setupResultPanel() {
         resultPanel = new JPanel();
@@ -194,6 +210,10 @@ public class Workout implements ActionListener {
 
     }
 
+    /**
+     * Sets up the choice panel for selecting workout options after completing an exercise.
+     */
+
     private void setupChoicePanel() {
         choicePanel = new JPanel();
         choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.Y_AXIS));
@@ -253,10 +273,18 @@ public class Workout implements ActionListener {
     }
 
 
+    /**
+     * Switches between panels
+     * @param name
+     */
+
     private void switchPanel(String name) {
         cardLayout.show(mainPanel, name);
     }
 
+    /**
+     * Starts the stopwatch for the workout session.
+     */
 
     private void startStopWatch() {
         startTime = System.currentTimeMillis();
@@ -267,6 +295,12 @@ public class Workout implements ActionListener {
         stopwatch.start();
 
     }
+
+    /**
+     * Starts a pause timer for the specified duration.
+     *
+     * @param seconds the duration of the pause in seconds
+     */
 
     private void startPause(int seconds) {
         pauseTimerLabel.setText("Pause is running: " + seconds + "s");
@@ -289,7 +323,15 @@ public class Workout implements ActionListener {
         pauseTimer.start();
     }
 
-    private void saveWorkoutToFile(String exercise, int reps, double weight) {
+    /**
+     * Saves the workout details to a file.
+     *
+     * @param exercise the name of the exercise
+     * @param reps the number of repetitions
+     * @param weight the weight used for the exercise
+     */
+
+    public void saveWorkoutToFile(String exercise, int reps, double weight) {
         String fileName = "workout_" + userName + ".txt";
         String date = java.time.LocalDate.now().toString();
         String line = date + ";" + exercise + ";" + reps + ";" + weight;
@@ -301,6 +343,10 @@ public class Workout implements ActionListener {
             JOptionPane.showMessageDialog(workoutFrame, "error", "error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    /**
+     * Displays the workout history from the user's workout file.
+     */
 
     private void showWorkoutHistory() {
         String fileName = "workout_" + userName + ".txt";
@@ -334,6 +380,10 @@ public class Workout implements ActionListener {
         JOptionPane.showMessageDialog(workoutFrame, scrollPane, "Workout History", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Increments the workout count for the user and saves it to a file.
+     */
+
     private void getWorkoutCount() {
         File file = new File("user_" + userName + "_workouts.txt");
         int count = 0;
@@ -357,6 +407,12 @@ public class Workout implements ActionListener {
         }
     }
 
+    /**
+     * Handles action events for the workout buttons.
+     * It manages the flow of the workout session based on user input.
+     *
+     * @param e the action event triggered by button presses
+     */
 
     @Override
     public void actionPerformed(ActionEvent e) {

@@ -79,6 +79,13 @@ public class UserSet implements ActionListener {
 
     }
 
+    /**
+     * Handles the action event when the save button is pressed.
+     * It validates the input fields and saves the user details to a file.
+     *
+     * @param e the action event triggered by the button press
+     */
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource()==saveButton){
@@ -106,6 +113,10 @@ public class UserSet implements ActionListener {
         }
     }
 
+    /**
+     * Saves the user details to a file.
+     */
+
     private void saveUserToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("user_"+username+".txt"))) {
             writer.write(user.getName() + "\n");
@@ -115,6 +126,10 @@ public class UserSet implements ActionListener {
             JOptionPane.showMessageDialog(userSetFrame, "Error in saving files", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    /**
+     * Loads user details from a file if it exists.
+     */
 
     private void loadUserFromFile() {
         File file = new File("user_" + username + ".txt");

@@ -43,6 +43,13 @@ public class Start implements ActionListener {
 
     }
 
+    /**
+     * Handles the action event when the start button is pressed.
+     * It disposes of the start frame and creates a new LoginScreen instance.
+     *
+     * @param e the action event triggered by the button press
+     */
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource()==startButton){
